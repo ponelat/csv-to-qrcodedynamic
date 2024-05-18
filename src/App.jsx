@@ -11,8 +11,19 @@ function App() {
   const { CSVReader } = useCSVReader();
   const [qrCodeDynamicApiKey, setQrCodeDynamicApiKey] = useLocalStorage("qrCodeDynamicApiKey", '');
   const [statusMap, setStatusMap] = useState({})
+
+  const updateStatus = (name, status, ...consoleStatus) => {
+    console.log(`Status: ${name} => ${status}`, ...consoleStatus)
+    setStatusMap(s => ({...s, [name]: {status, error: false}})) 
+  }
+  const updateError = (name, status, ...consoleStatus) => {
+    console.log(`Status: ${name} => ${status}`, ...consoleStatus)
+    setStatusMap(s => ({...s, [name]: {status, error: true}})) 
+  }
+
   const [inProgress, setInProgress] = useState('')
   const [links, setLinks] = useState([]);
+
   const api = useMemo(() => {
     return createApi(qrCodeDynamicApiKey)
   }, [qrCodeDynamicApiKey])
@@ -35,14 +46,6 @@ function App() {
 
   const createAndDownload = useCallback(async (links) => {
     setInProgress('Creating and downloading QRs...')
-    const updateStatus = (name, status, ...consoleStatus) => {
-      console.log(`Status: ${name} => ${status}`, ...consoleStatus)
-      setStatusMap(s => ({...s, [name]: {status, error: false}})) 
-    }
-    const updateError = (name, status, ...consoleStatus) => {
-      console.log(`Status: ${name} => ${status}`, ...consoleStatus)
-      setStatusMap(s => ({...s, [name]: {status, error: true}})) 
-    }
     await processLinks(links, {
       api,
       updateStatus,
@@ -58,7 +61,7 @@ function App() {
   return (
     <>
       <div className="mt-8 flex items-end space-x-8 justify-end" >
-        <div className="flex-1" >
+	<div className="flex-1" >
 
 	  <h1 className="text-3xl mt-4" > 
 	    Batch (CSV) {'->'} QRCodeDynamic.com
@@ -110,7 +113,7 @@ function App() {
 		  <tr key={i} className={`${statusMap[name].error && 'bg-red-800 text-white'}`} >
 		    <td className="pr-4 pt-2" >{name}</td>
 		    <td className="pr-4 pt-2" >{link}</td>
-		  <td className={`pr-4 pt-2`} >{statusMap[name].status}</td>
+		    <td className={`pr-4 pt-2`} >{statusMap[name].status}</td>
 		  </tr>
 		))}
 	      </tbody>

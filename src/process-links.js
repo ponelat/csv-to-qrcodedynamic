@@ -64,7 +64,11 @@ export default async function processLinks(links, {
   // Finalize the zip file and download
   const zipBlob = await writer.close();
   const qrFilename = `QRCodes__${currentDateStr()}__${numberOfFiles}xQRs.zip`
-  triggerDownloadFromBlob(zipBlob, qrFilename)
+  if(numberOfFiles > 0) {
+    triggerDownloadFromBlob(zipBlob, qrFilename)
+  } else {
+    alert('No files were zipped')
+  }
 }
 
 function currentDateStr() {
