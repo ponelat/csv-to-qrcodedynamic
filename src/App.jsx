@@ -1,4 +1,5 @@
 import './App.css'
+import {Button} from './ui'
 import { useState, useCallback, useMemo } from 'react'
 import { useCSVReader } from "react-papaparse";
 import DownloadTemplate from './DownloadTemplate.jsx'
@@ -12,17 +13,16 @@ import processLinks from './process-links.js'
 //   svgUrl:  'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg'
 // }
 
+
 function App() {
   const { CSVReader } = useCSVReader();
   const [qrCodeDynamicApiKey, setQrCodeDynamicApiKey] = useLocalStorage("qrCodeDynamicApiKey", '');
   const [statusMap, setStatusMap] = useState({})
   const [inProgress, setInProgress] = useState('')
   const [links, setLinks] = useState([]);
-
-  const [linkCache, setLinkCache] = useLocalStorage('links-cache', {})
   const api = useMemo(() => {
-    return createApi(qrCodeDynamicApiKey, linkCache, setLinkCache)
-  }, [qrCodeDynamicApiKey, linkCache])
+    return createApi(qrCodeDynamicApiKey)
+  }, [qrCodeDynamicApiKey])
 
   // const downloadZip = useCallback(() => {
   //   // Here Next
@@ -88,17 +88,16 @@ function App() {
       </div>
 
       
-      <div className="mt-8 border p-4 border-gray-700">
+      <div className="mt-4 border p-4 border-gray-700">
 
-	<div className="flex items-center content-center space-x-4 " >
-	  <h2 className="text-2xl" >Links</h2>
-
-
-	  <button disabled={!links.length} onClick={() => { downloadZip() }} className="bg-blue-700" >Download QRs</button>
-	  <button disabled={!links.length} onClick={() => { clearData() }} className="bg-red-500" >Clear</button>
+	<div className="mt-4 flex items-center content-center space-x-4 " >
+	  <h2 className="text-2xl" >From List</h2>
+	  <Button disabled={!links.length} onClick={() => { clearData() }} className="bg-blue-500"> Create Links/QRs and Download</Button>
+	  <Button disabled={!links.length} onClick={() => { clearData() }} className="bg-red-500" >Clear List</Button>
 	</div>
-	<div className="ml-4 text-2xl" >
-	  {inProgress}
+
+	<div className={`mt-3 text-md ${!inProgress && 'invisible'}`} >
+	  {inProgress || '...'}
 	</div>
 
 	{ links.length ? (
@@ -147,7 +146,7 @@ function App() {
 		      <>
 			<div >
 			  <div>
-			    <button {...getRootProps()} className="bg-blue-800"  >Upload CSV Links</button>
+			    <Button {...getRootProps()} className="bg-blue-800"  >Upload CSV Links</Button>
 			  </div>
 			</div>
 		      </>

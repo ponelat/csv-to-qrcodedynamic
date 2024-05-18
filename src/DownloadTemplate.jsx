@@ -1,8 +1,15 @@
 import { useCSVDownloader } from "react-papaparse";
+import {Button} from './ui'
 const TEMPLATE = [
-  {"Name": "Some_Name01", "URL": "https://example.com/some-destination01"},
-  {"Name": "Some_Name02", "URL": "https://example.com/some-destination02"},
+  {"Name": "Some_Name01", "URL": "https://example.com/some-destination-01"},
+  {"Name": "Some_Name02", "URL": "https://example.com/some-destination-02"},
 ] 
+
+function but({...props}) {
+  return (
+    <button className="font-bold" {...props} />
+  )
+}
 
 export default function DownloadTemplate() {
   const { CSVDownloader, Type } = useCSVDownloader();
@@ -10,13 +17,14 @@ export default function DownloadTemplate() {
   return (
     <>
 	<CSVDownloader
-	  type={Type.Button}
 	  bom={true}
-	  filename={"qr-template"}
+	  filename={"qrcodedynamic-links"}
 	  delimiter={","}
 	  data={TEMPLATE}
 	>
+          <Button className="bg-blue-600" >
 	  Download CSV Template
+          </Button>
 	</CSVDownloader>
     </>
   )
