@@ -1,8 +1,8 @@
-# React + Vite
+# CSV to qrcodedynamic.com
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Upload a CSV file to create dynamic links and QR codes via qrcodedynamic.com.
 
-Currently, two official plugins are available:
+## Missing Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Ability to handle already-created links**
+If a URL already exists, it'll fail to create... but! It won't provide an ID. And there is no way to get the ID than to download the full list of Links.

@@ -1,0 +1,10 @@
+<emacs>
+  <command title="Dev" dir="." >
+
+    <cmd>
+      bun run dev
+    </cmd>
+
+  </command>
+
+</emacs>

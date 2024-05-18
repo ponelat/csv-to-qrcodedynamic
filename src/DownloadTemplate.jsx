@@ -9,7 +9,6 @@ export default function DownloadTemplate() {
 
   return (
     <>
-      <div>
 	<CSVDownloader
 	  type={Type.Button}
 	  bom={true}
@@ -19,7 +18,6 @@ export default function DownloadTemplate() {
 	>
 	  Download CSV Template
 	</CSVDownloader>
-      </div>
     </>
   )
   
