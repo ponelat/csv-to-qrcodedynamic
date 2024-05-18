@@ -1,4 +1,6 @@
-export default function createApi(apiKey, cache, setCache) {
+const EXAMPLE_SVG = 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg'
+
+export default function createApi(apiKey) {
 
   const postApi = async function(url, data) {
     const formData  = new FormData();
@@ -25,19 +27,43 @@ export default function createApi(apiKey, cache, setCache) {
   return {
 
     async createLink(name, link) {
-      // return postApi('https://qrcodedynamic.com/api/links', {
-      //   url: name,
-      //   location_url: link,
-      // }).then(json => json.data.id)
-      return new Promise((resolve) => {
-      	setTimeout(() => resolve(123), 3000)
+      const json = await postApi('https://qrcodedynamic.com/api/links', {
+        url: name,
+        location_url: link,
       })
+      return {id: json.data.id}
+
+      // return new Promise((resolve) => {
+      // 	setTimeout(() => resolve({id: 123}), 3000)
+      // })
     },
 
-    async createQr() {
-      return new Promise((resolve) => {
-	setTimeout(() => resolve({ id: 345, svgUrl: 'https://example.com/fun.svg'}), 3000)
+    async createQr(name, link, linkId) {
+      const json = await postApi('https://qrcodedynamic.com/api/qr-codes', {
+        name,
+        link_id: linkId,
+        url: link,
+        type: 'url',
+        size: 2000
       })
+      return {id: json.data.id}
+      // return new Promise((resolve) => {
+      // 	setTimeout(() => resolve({ id: 345 }), 2000)
+      // })
+    },
+
+    async getQr(id) {
+      const json = await getApi(`https://qrcodedynamic.com/api/qr-codes/${id}`)
+      return {qr_code: json.data.qr_code}
+      // return new Promise((resolve) => {
+      // 	setTimeout(() => resolve({ qr_code: EXAMPLE_SVG }), 2000)
+      // })
+
+    },
+
+    async getLink(id) {
+      const json = await getApi(`https://qrcodedynamic.com/api/links/${id}`)
+      return {url: json.data.url}
     }
 
   }
