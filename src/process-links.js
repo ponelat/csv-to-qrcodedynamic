@@ -2,7 +2,7 @@ import svgToJpeg from './svg-to-jpeg.js'
 import * as zip from '@zip.js/zip.js'
 import promiseBatch from './promise-batch.js'
 
-const BATCH_SIZE = 5
+const BATCH_SIZE = 1
 
 // const exampleQr = {
 //   name:  'Car01',
