@@ -1,7 +1,7 @@
 const EXAMPLE_SVG = 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-const THROTTLE = 1200
+const THROTTLE = 2200
 
 const API_BASE = 'https://qrcodedynamic.com/api'
 // const API_BASE = 'https://httpbin.org/anything'
