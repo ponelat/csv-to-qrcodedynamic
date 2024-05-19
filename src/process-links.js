@@ -1,6 +1,8 @@
-import downloadSvg from './download-svg.js'
 import svgToJpeg from './svg-to-jpeg.js'
 import * as zip from '@zip.js/zip.js'
+import promiseBatch from './promise-batch.js'
+
+const BATCH_SIZE = 5
 
 // const exampleQr = {
 //   name:  'Car01',
@@ -28,7 +30,7 @@ export default async function processLinks(links, {
   const writer = new zip.ZipWriter(new zip.BlobWriter('application/zip'));
   let numberOfFiles = 0
 
-  await Promise.all(links.map(async (link) => {
+  await promiseBatch(links, (async (link) => {
     try {
       
       updateStatus(link.name, 'Creating Link...', link.link)
@@ -45,7 +47,7 @@ export default async function processLinks(links, {
       const svgUrl = (await api.getQr(qrId)).qr_code
 
       updateStatus(link.name, `Downloading SVG`, `SVG URL: ${svgUrl}`)
-      const svgText = await downloadSvg(svgUrl)
+      const svgText = await api.downloadSvg(svgUrl)
 
       updateStatus(link.name, `Converting to JPG`, `SVG Length: $}svgText.length}`)
       const jpegBlob = await svgToJpeg(svgText, 2000, 2000);
@@ -59,7 +61,7 @@ export default async function processLinks(links, {
     } catch(error) {
       updateError(link.name, error.message, error)
     }
-  }))
+  }), BATCH_SIZE)
 
   // Finalize the zip file and download
   const zipBlob = await writer.close();

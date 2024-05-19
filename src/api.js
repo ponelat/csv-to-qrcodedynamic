@@ -1,13 +1,22 @@
 const EXAMPLE_SVG = 'https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/car.svg'
 
-export default function createApi(apiKey) {
+const API_BASE = 'https://qrcodedynamic.com/api'
+// const API_BASE = 'https://httpbin.org/anything'
+
+export default function createApi(apiKey, proxyBase) {
+
+  // To bypass CORS issues
+  const proxyUrl = (url) => {
+    return `${proxyBase}${encodeURIComponent(url)}`
+  }
+  const apiUrl = (url) => proxyUrl(API_BASE + url)
 
   const postApi = async function(url, data) {
     const formData  = new FormData();
     for(const name in data) {
       formData.append(name, data[name]);
     }
-    return fetch(url, {
+    return fetch(apiUrl(url), {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`
@@ -17,17 +26,20 @@ export default function createApi(apiKey) {
   }
 
   const getApi = async function(url) {
-    return fetch(url, {
+    return fetch(apiUrl(url), {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${apiKey}`
       }
     }).then(fetchError)
   }
+
+  ///// API...
+
   return {
 
     async createLink(name, link) {
-      const json = await postApi('https://qrcodedynamic.com/api/links', {
+      const json = await postApi('/links', {
         url: name,
         location_url: link,
       })
@@ -39,7 +51,7 @@ export default function createApi(apiKey) {
     },
 
     async createQr(name, link, linkId) {
-      const json = await postApi('https://qrcodedynamic.com/api/qr-codes', {
+      const json = await postApi('/qr-codes', {
         name,
         link_id: linkId,
         url: link,
@@ -53,7 +65,7 @@ export default function createApi(apiKey) {
     },
 
     async getQr(id) {
-      const json = await getApi(`https://qrcodedynamic.com/api/qr-codes/${id}`)
+      const json = await getApi(`/qr-codes/${id}`)
       return {qr_code: json.data.qr_code}
       // return new Promise((resolve) => {
       // 	setTimeout(() => resolve({ qr_code: EXAMPLE_SVG }), 2000)
@@ -62,8 +74,13 @@ export default function createApi(apiKey) {
     },
 
     async getLink(id) {
-      const json = await getApi(`https://qrcodedynamic.com/api/links/${id}`)
+      const json = await getApi(`/links/${id}`)
       return {url: json.data.url}
+    },
+
+    async downloadSvg(svgUrl) {
+      const response = await fetch(proxyUrl(svgUrl));
+      return await response.text();
     }
 
   }
@@ -74,7 +91,7 @@ function fetchError(fetchRes) {
     return fetchRes.json()
   } else {
     return fetchRes.text().then(text => {
-      throw new Error(text)
+      throw new Error(text.slice(0, 140))
     })
   }
 }

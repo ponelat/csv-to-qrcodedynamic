@@ -10,6 +10,7 @@ import processLinks from './process-links.js'
 function App() {
   const { CSVReader } = useCSVReader();
   const [qrCodeDynamicApiKey, setQrCodeDynamicApiKey] = useLocalStorage("qrCodeDynamicApiKey", '');
+  const [proxyBase, setProxyBase] = useLocalStorage("proxyBase", 'https://corsproxy.io/?');
   const [statusMap, setStatusMap] = useState({})
 
   const updateStatus = (name, status, ...consoleStatus) => {
@@ -25,8 +26,8 @@ function App() {
   const [links, setLinks] = useState([]);
 
   const api = useMemo(() => {
-    return createApi(qrCodeDynamicApiKey)
-  }, [qrCodeDynamicApiKey])
+    return createApi(qrCodeDynamicApiKey, proxyBase)
+  }, [qrCodeDynamicApiKey, proxyBase])
 
   const csvUploaded = useCallback(async (results) => {
 
@@ -73,15 +74,31 @@ function App() {
 
 	</div>
 	<div>
-	  <label htmlFor="apikey" className="block text-md font-medium text-gray-900 dark:text-white">QRCodeDynamic.com API Key</label>
-	  <p className="text-sm mt-1 text-gray-500 italic" >
-	    You can grab your API Key from: <a href="https://qrcodedynamic.com/account-api">https://qrcodedynamic.com/account-api</a>
-	  </p>
-	  <input
-	    value={qrCodeDynamicApiKey}
-	    onChange={e => setQrCodeDynamicApiKey(e.target.value)}
-	    type="password"  id="apikey"
-	    className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[400px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+
+	  <div>
+	    <label htmlFor="proxyBase" className="block text-md font-medium text-gray-900 dark:text-white">
+              Proxy Base
+            </label>
+	    <p className="text-sm mt-1 text-gray-500 italic" >
+	      Used to bypass CORS issues, a public one is: <a href="https://corsproxy.io/?">https://corsproxy.io/?</a>
+	    </p>
+	    <input
+	      value={proxyBase}
+	      onChange={e => setProxyBase(e.target.value)}
+	      type="text"  id="proxy-base"
+	      className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[400px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+	  </div>
+	  <div className="mt-2" >
+	    <label htmlFor="apikey" className="block text-md font-medium text-gray-900 dark:text-white">QRCodeDynamic.com API Key</label>
+	    <p className="text-sm mt-1 text-gray-500 italic" >
+	      You can grab your API Key from: <a href="https://qrcodedynamic.com/account-api">https://qrcodedynamic.com/account-api</a>
+	    </p>
+	    <input
+	      value={qrCodeDynamicApiKey}
+	      onChange={e => setQrCodeDynamicApiKey(e.target.value)}
+	      type="password"  id="apikey"
+	      className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[400px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+	  </div>
 	</div>
       </div>
 
