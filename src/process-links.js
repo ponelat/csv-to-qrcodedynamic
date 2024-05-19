@@ -23,13 +23,20 @@ function triggerDownloadFromBlob(blob, name) {
 export default async function processLinks(links, {
   updateStatus,
   updateError,
+  setProgress,
   api,
 }) {
 
   // Create a zip writer
   const writer = new zip.ZipWriter(new zip.BlobWriter('application/zip'));
-  let numberOfFiles = 0
+  let filesAdded = 0
+  const totalFiles = links.length
+  let failedFiles = 0
+  const updateProgress = () => {
+    setProgress(`Progress: ${filesAdded + failedFiles}/${totalFiles} processed. Failed: ${failedFiles}`)
+  }
 
+  updateProgress()
   await promiseBatch(links, (async (link) => {
     try {
       
@@ -49,28 +56,33 @@ export default async function processLinks(links, {
       updateStatus(link.name, `Downloading SVG`, `SVG URL: ${svgUrl}`)
       const svgText = await api.downloadSvg(svgUrl)
 
-      updateStatus(link.name, `Converting to JPG`, `SVG Length: $}svgText.length}`)
+      updateStatus(link.name, `Converting to JPG`, `SVG Length: ${svgText.length}`)
       const jpegBlob = await svgToJpeg(svgText, 2000, 2000);
 
       const filename = `${link.name}.jpeg`
       updateStatus(link.name, `Adding to .zip`, filename, `Size: ${jpegBlob.size}`)
       await writer.add(filename, new zip.BlobReader(jpegBlob));
-      numberOfFiles++
+      filesAdded++
 
       updateStatus(link.name, `Added to .zip`)
+
+      updateProgress()
     } catch(error) {
+      failedFiles++
+      updateProgress()
       updateError(link.name, error.message, error)
     }
   }), BATCH_SIZE)
 
+
   // Finalize the zip file and download
   const zipBlob = await writer.close();
-  const qrFilename = `QRCodes__${currentDateStr()}__${numberOfFiles}xQRs.zip`
-  if(numberOfFiles > 0) {
+  const qrFilename = `QRCodes__${currentDateStr()}__${filesAdded}xQRs.zip`
+  if(filesAdded > 0) {
     triggerDownloadFromBlob(zipBlob, qrFilename)
-  } else {
-    alert('No files were zipped')
-  }
+  } 
+
+  updateProgress()
 }
 
 function currentDateStr() {

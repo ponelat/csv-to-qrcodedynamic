@@ -22,7 +22,8 @@ function App() {
     setStatusMap(s => ({...s, [name]: {status, error: true}})) 
   }
 
-  const [inProgress, setInProgress] = useState('')
+  const [inProgress, setInProgress] = useState(false)
+  const [msg, setMsg] = useState('')
   const [links, setLinks] = useState([]);
 
   const api = useMemo(() => {
@@ -42,21 +43,25 @@ function App() {
       return acc
     },{}))
 
-    setInProgress('')
+    setMsg(`Links uploaded: ${links.length}`)
   }, [])
 
   const createAndDownload = useCallback(async (links) => {
-    setInProgress('Creating and downloading QRs...')
+    setMsg('Creating and downloading QRs...')
+    setInProgress(true)
     await processLinks(links, {
       api,
       updateStatus,
-      updateError
+      updateError,
+      setProgress: setMsg,
     })
-    setInProgress('')
+    setInProgress(false)
   }, [api])
 
   const clearData = useCallback(() => {
     setStatusMap({})
+    setInProgress(false)
+    setMsg('')
     setLinks([])
   }, [])
   return (
@@ -110,8 +115,8 @@ function App() {
 	  <Button disabled={!links.length} onClick={() => { clearData() }} className="bg-red-500" >Clear List</Button>
 	</div>
 
-	<div className={`mt-3 text-md ${!inProgress && 'invisible'}`} >
-	  {inProgress || '...'}
+	<div className={`mt-4 text-md ${!msg && 'invisible'}`} >
+          {msg || '...'}
 	</div>
 
 	{ links.length ? (
