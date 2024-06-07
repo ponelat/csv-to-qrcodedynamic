@@ -32,10 +32,13 @@ function App() {
 
   const csvUploaded = useCallback(async (results) => {
 
-    const links = results.data.slice(1).map(v => ({
-      name: v[0],
-      link: v[1]
-    }))
+  const links = results.data.slice(1)
+    .filter(v => v[0] && v[1])
+    .map(v => ({
+       name: v[0],
+       link: v[1]
+     }))
+
 
     setLinks(links)
     setStatusMap(links.reduce((acc, link) => {
