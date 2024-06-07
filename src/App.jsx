@@ -10,7 +10,7 @@ import processLinks from './process-links.js'
 function App() {
   const { CSVReader } = useCSVReader();
   const [qrCodeDynamicApiKey, setQrCodeDynamicApiKey] = useLocalStorage("qrCodeDynamicApiKey", '');
-  const [proxyBase, setProxyBase] = useLocalStorage("proxyBase", 'https://corsproxy.io/?');
+  const [proxyBase, setProxyBase] = useLocalStorage("proxyBase", 'https://ponelat-proxy.jponelat.workers.dev/?');
   const [statusMap, setStatusMap] = useState({})
 
   const updateStatus = (name, status, ...consoleStatus) => {
@@ -99,6 +99,8 @@ function App() {
             </label>
 	    <p className="text-sm mt-1 text-gray-500 italic" >
 	      Used to bypass CORS issues, a public one is: <a href="https://corsproxy.io/?">https://corsproxy.io/?</a>
+              <br/>
+              And the developer's one is:  <a href="https://ponelat-proxy.jponelat.workers.dev/?">https://ponelat-proxy.jponelat.workers.dev/?</a>
 	    </p>
 	    <input
 	      value={proxyBase}

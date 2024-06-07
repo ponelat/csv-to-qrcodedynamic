@@ -8,8 +8,11 @@ const API_BASE = 'https://qrcodedynamic.com/api'
 
 export default function createApi(apiKey, proxyBase) {
 
-  // To bypass CORS issues
+  // To (optionally) bypass CORS issues
   const proxyUrl = (url) => {
+    if(!proxyBase) {
+      return url
+    }
     return `${proxyBase}${encodeURIComponent(url)}`
   }
   const apiUrl = (url) => proxyUrl(API_BASE + url)
