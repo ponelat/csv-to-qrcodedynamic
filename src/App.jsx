@@ -6,6 +6,8 @@ import DownloadTemplate from './DownloadTemplate.jsx'
 import {useLocalStorage} from '@uidotdev/usehooks'
 import createApi from './api'
 import processLinks from './process-links.js'
+import CreateQrCodeBody from './CreateNewQrCodeBody.jsx'
+import UpdateQrCodeBody from './UpdateQrCodeBody.jsx'
 
 function App() {
   const { CSVReader } = useCSVReader();
@@ -136,75 +138,15 @@ function App() {
       {/* Tabbed body */}
       <div className="relative top--10 border-t-0 border p-4 border-gray-600">
 
-	<div className=" border-b border-gray-600 pb-2 flex items-center justify-end space-x-4 " >
-	  <div className={`flex-1 text-md ${!msg && 'invisible'}`} >
-	    {msg || '...'}
-	  </div>
-	  <Button disabled={!links.length} onClick={() => { clearData() }} className="border-blue-600 disabled:border-gray-600 border" >Clear List</Button>
-	  <Button disabled={!links.length || !!inProgress} onClick={() => { createAndDownload(links) }} className="bg-blue-600">Execute</Button>
-	</div>
+        {tabIndex === 0 ? (
+	  <CreateQrCodeBody />
+        ): tabIndex === 1 ? (
+          <UpdateQrCodeBody />
+        ): (
+          <div>No tab with index {tabIndex}</div>
+        )}
 
-
-	{ links.length ? (
-
-	  <div className="flex justify-center" >
-	    <table className="mt-8 w-full" >
-	      <thead>
-		<tr className="" >
-		  <th className="bg-gray-700 p-1" >Name</th>
-		  <th className="bg-gray-700 p-1" >URL</th>
-		  <th className="bg-gray-700 p-1" >Status</th>
-		</tr>
-	      </thead>
-	      <tbody  >
-		{links.map(({name,link}, i) => (
-		  <tr key={i} className={`${statusMap[name].error && 'bg-red-800 text-white'}`} >
-		    <td className="pr-4 pt-2" >{name}</td>
-		    <td className="pr-4 pt-2" >{link}</td>
-		    <td className={`pr-4 pt-2`} >{statusMap[name].status}</td>
-		  </tr>
-		))}
-	      </tbody>
-	    </table>
-
-	  </div>
-	) :
-	  (
-	    <div className="mt-8 text-center " >
-
-	      <p className="text-lg text-gray-400" >
-		No links uploaded.{' '} <DownloadTemplate />.
-	      </p>
-
-	      <div className="mt-4 flex justify-center" >
-
-		<div className="ml-4" >
-		  <CSVReader
-		    onUploadAccepted={(results) => {
-		      csvUploaded(results)
-		    }}
-		    config={{ worker: true }}
-		    noDrag
-		  >
-		    {({
-		      getRootProps,
-		    }) => {
-		      return (
-			<>
-			  <div >
-			    <div>
-			      <Button {...getRootProps()} className="bg-blue-700"  >Upload</Button>
-			    </div>
-			  </div>
-			</>
-		      )}}
-		  </CSVReader>
-		</div>
-	      </div>
-	    </div>)
-	}
       </div>
-
     </>
   )
 }
