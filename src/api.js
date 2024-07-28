@@ -76,6 +76,18 @@ export default function createApi(apiKey, proxyBase) {
       // })
     },
 
+    async updateLink(link_id, link) {
+      const json = await postApi(`/links/${link_id}`, {
+        ...link
+      })
+      return {id: json.data.id}
+
+      // return new Promise((resolve) => {
+      // 	setTimeout(() => resolve(
+      //     { id: link_id, link }), 2000)
+      // })
+    },
+
     async getQr(id) {
       const json = await getApi(`/qr-codes/${id}`)
       return {qr_code: json.data.qr_code}

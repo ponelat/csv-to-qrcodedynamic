@@ -22,9 +22,7 @@ export default function DownloadTemplate() {
 	  delimiter={","}
 	  data={TEMPLATE}
 	>
-          <a href="#">
 	    Download example
-          </a>
 	</CSVDownloader>
     </>
   )

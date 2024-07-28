@@ -1,4 +1,5 @@
 import './App.css'
+import {Button} from './ui'
 import { useState, useCallback, useMemo } from 'react'
 import {useLocalStorage} from '@uidotdev/usehooks'
 import createApi from './api'
@@ -16,6 +17,7 @@ function App() {
   const [tabIndex, setTabIndex] = useState(0)
   const classesTabSelected = 'border-gray-600 border border-b-0'
   const classesTabNotSelected = 'bg-blue-700 border-gray-600 border-b'
+  const [quickSearch, setQuickSearch] = useState('')
 
   return (
     <>
@@ -64,6 +66,19 @@ function App() {
 	</div>
       </div>
 
+      <form className="flex space-x-2 mt-4 items-center" onSubmit={(e) => {
+	e.preventDefault()
+	window.open(`https://qrcodedynamic.com/links?search=${encodeURI(quickSearch)}&search_by=url&submit=`, '_blank')
+      }}>
+	<input
+	  value={quickSearch}
+	  placeholder="Quickly search qrcodedynamic.com"
+	  onChange={e => setQuickSearch(e.target.value)}
+	  type="text"  id="quick-search"
+	  className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[400px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+	<Button type='submit' className="bg-blue-600 " >Search</Button>
+      </form>
+
       {/* Tab selectors */}
       <div className="mt-16 flex" >
 	<button onClick={() => setTabIndex(0)}
@@ -85,7 +100,7 @@ function App() {
         {tabIndex === 0 ? (
 	  <CreateQrCodeBody api={api} />
         ): tabIndex === 1 ? (
-          <UpdateQrCodeBody />
+          <UpdateQrCodeBody api={api} />
         ): (
           <div>No tab with index {tabIndex}</div>
         )}

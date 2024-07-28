@@ -2,7 +2,7 @@ import {useState, useCallback} from 'react'
 import {Button} from './ui'
 import DownloadTemplate from './DownloadTemplate.jsx'
 import { useCSVReader } from "react-papaparse";
-import processLinks from './process-links.js'
+import executeLinks from './execute-create-links.js'
 
 export default function CreateQrCodBody({api}) {
   const { CSVReader } = useCSVReader();
@@ -43,7 +43,7 @@ export default function CreateQrCodBody({api}) {
   const createAndDownload = useCallback(async (links) => {
     setMsg('Creating and downloading QRs...')
     setInProgress(true)
-    await processLinks(links, {
+    await executeLinks(links, {
       api,
       updateStatus,
       updateError,
@@ -97,7 +97,7 @@ export default function CreateQrCodBody({api}) {
 	<div className="mt-8 text-center " >
 
 	  <p className="text-lg text-gray-400" >
-	    No links uploaded.{' '} <DownloadTemplate />.
+	    No links uploaded.{' '} <span className="cursor-pointer" ><DownloadTemplate />.</span>
 	  </p>
 
 	  <div className="mt-4 flex justify-center" >
