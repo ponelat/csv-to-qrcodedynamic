@@ -76,8 +76,8 @@ export default function CreateQrCodBody({api}) {
 	  <table className="mt-8 w-full" >
 	    <thead>
 	      <tr className="" >
-		<th className="bg-gray-700 p-1" >Name</th>
 		<th className="bg-gray-700 p-1" >URL</th>
+		<th className="bg-gray-700 p-1" >Location URL</th>
 		<th className="bg-gray-700 p-1" >Status</th>
 	      </tr>
 	    </thead>
@@ -85,7 +85,9 @@ export default function CreateQrCodBody({api}) {
 	      {links.map(({name,link}, i) => (
 		<tr key={i} className={`${statusMap[name].error && 'bg-red-800 text-white'}`} >
 		  <td className="pr-4 pt-2" >{name}</td>
-		  <td className="pr-4 pt-2" >{link}</td>
+		  <td className="pr-4 pt-2" >
+                    <a target="_blank" href={link}>{link}</a>
+                  </td>
 		  <td className={`pr-4 pt-2`} >{statusMap[name].status}</td>
 		</tr>
 	      ))}
