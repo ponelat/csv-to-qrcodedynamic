@@ -61,6 +61,10 @@ function App() {
     setInProgress(false)
   }, [api])
 
+  const [tabIndex, setTabIndex] = useState(0)
+  const classesTabSelected = 'border-gray-600 border border-b-0'
+  const classesTabNotSelected = 'bg-blue-700 border-gray-600 border-b'
+
   const clearData = useCallback(() => {
     setStatusMap({})
     setInProgress(false)
@@ -114,17 +118,32 @@ function App() {
 	</div>
       </div>
 
-      <div className="mt-16 border p-4 border-gray-700">
+      {/* Tab selectors */}
+      <div className="mt-16 flex" >
+	<button onClick={() => setTabIndex(0)}
+		className={`px-5 py-2 text-xl ${tabIndex === 0 ? classesTabSelected : classesTabNotSelected}`}
+        >
+          Create new QRs
+        </button>
+	<button onClick={() => setTabIndex(1)}
+		className={`px-5 py-2 text-xl ${tabIndex === 1 ? classesTabSelected : classesTabNotSelected}`}
+          >
+          Update QRs
+        </button>
+        <div className="flex-1 border-gray-600 border-b " ></div>
+      </div>
 
-	<div className="mt-4 flex items-center content-center space-x-4 " >
-	  <h2 className="text-2xl" >From List</h2>
-	  <Button disabled={!links.length || !!inProgress} onClick={() => { createAndDownload(links) }} className="bg-blue-500"> Create Links/QRs and Download</Button>
-	  <Button disabled={!links.length} onClick={() => { clearData() }} className="bg-red-500" >Clear List</Button>
+      {/* Tabbed body */}
+      <div className="relative top--10 border-t-0 border p-4 border-gray-600">
+
+	<div className=" border-b border-gray-600 pb-2 flex items-center justify-end space-x-4 " >
+	  <div className={`flex-1 text-md ${!msg && 'invisible'}`} >
+	    {msg || '...'}
+	  </div>
+	  <Button disabled={!links.length} onClick={() => { clearData() }} className="border-blue-600 disabled:border-gray-600 border" >Clear List</Button>
+	  <Button disabled={!links.length || !!inProgress} onClick={() => { createAndDownload(links) }} className="bg-blue-600">Execute</Button>
 	</div>
 
-	<div className={`mt-4 text-md ${!msg && 'invisible'}`} >
-          {msg || '...'}
-	</div>
 
 	{ links.length ? (
 
@@ -154,13 +173,10 @@ function App() {
 	    <div className="mt-8 text-center " >
 
 	      <p className="text-lg text-gray-400" >
-		No links uploaded
+		No links uploaded.{' '} <DownloadTemplate />.
 	      </p>
 
 	      <div className="mt-4 flex justify-center" >
-		<div className="ml-4">
-		  <DownloadTemplate />
-		</div>
 
 		<div className="ml-4" >
 		  <CSVReader
@@ -177,7 +193,7 @@ function App() {
 			<>
 			  <div >
 			    <div>
-			      <Button {...getRootProps()} className="bg-blue-800"  >Upload CSV Links</Button>
+			      <Button {...getRootProps()} className="bg-blue-700"  >Upload</Button>
 			    </div>
 			  </div>
 			</>

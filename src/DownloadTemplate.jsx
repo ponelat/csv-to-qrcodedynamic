@@ -18,13 +18,13 @@ export default function DownloadTemplate() {
     <>
 	<CSVDownloader
 	  bom={true}
-	  filename={"qrcodedynamic-links"}
+	  filename={"create-qrcodedynamic-links"}
 	  delimiter={","}
 	  data={TEMPLATE}
 	>
-          <Button className="bg-blue-600" >
-	  Download CSV Template
-          </Button>
+          <a href="#">
+	    Download example
+          </a>
 	</CSVDownloader>
     </>
   )
