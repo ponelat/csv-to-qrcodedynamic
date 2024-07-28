@@ -1,78 +1,22 @@
 import './App.css'
-import {Button} from './ui'
 import { useState, useCallback, useMemo } from 'react'
-import { useCSVReader } from "react-papaparse";
-import DownloadTemplate from './DownloadTemplate.jsx'
 import {useLocalStorage} from '@uidotdev/usehooks'
 import createApi from './api'
-import processLinks from './process-links.js'
 import CreateQrCodeBody from './CreateNewQrCodeBody.jsx'
 import UpdateQrCodeBody from './UpdateQrCodeBody.jsx'
 
 function App() {
-  const { CSVReader } = useCSVReader();
   const [qrCodeDynamicApiKey, setQrCodeDynamicApiKey] = useLocalStorage("qrCodeDynamicApiKey", '');
   const [proxyBase, setProxyBase] = useLocalStorage("proxyBase", 'https://proxy.ponelat.workers.dev/?');
-  const [statusMap, setStatusMap] = useState({})
-
-  const updateStatus = (name, status, ...consoleStatus) => {
-    console.log(`Status: ${name} => ${status}`, ...consoleStatus)
-    setStatusMap(s => ({...s, [name]: {status, error: false}})) 
-  }
-  const updateError = (name, status, ...consoleStatus) => {
-    console.log(`Status: ${name} => ${status}`, ...consoleStatus)
-    setStatusMap(s => ({...s, [name]: {status, error: true}})) 
-  }
-
-  const [inProgress, setInProgress] = useState(false)
-  const [msg, setMsg] = useState('')
-  const [links, setLinks] = useState([]);
 
   const api = useMemo(() => {
     return createApi(qrCodeDynamicApiKey, proxyBase)
   }, [qrCodeDynamicApiKey, proxyBase])
 
-  const csvUploaded = useCallback(async (results) => {
-
-  const links = results.data.slice(1)
-    .filter(v => v[0] && v[1])
-    .map(v => ({
-       name: v[0],
-       link: v[1]
-     }))
-
-
-    setLinks(links)
-    setStatusMap(links.reduce((acc, link) => {
-      acc[link.name] = {status: '', error: false}
-      return acc
-    },{}))
-
-    setMsg(`Links uploaded: ${links.length}`)
-  }, [])
-
-  const createAndDownload = useCallback(async (links) => {
-    setMsg('Creating and downloading QRs...')
-    setInProgress(true)
-    await processLinks(links, {
-      api,
-      updateStatus,
-      updateError,
-      setProgress: setMsg,
-    })
-    setInProgress(false)
-  }, [api])
-
   const [tabIndex, setTabIndex] = useState(0)
   const classesTabSelected = 'border-gray-600 border border-b-0'
   const classesTabNotSelected = 'bg-blue-700 border-gray-600 border-b'
 
-  const clearData = useCallback(() => {
-    setStatusMap({})
-    setInProgress(false)
-    setMsg('')
-    setLinks([])
-  }, [])
   return (
     <>
       <div className="mt-8 flex items-end space-x-8 justify-end" >
@@ -123,12 +67,12 @@ function App() {
       {/* Tab selectors */}
       <div className="mt-16 flex" >
 	<button onClick={() => setTabIndex(0)}
-		className={`px-5 py-2 text-xl ${tabIndex === 0 ? classesTabSelected : classesTabNotSelected}`}
+		className={`px-7 py-1 text-xl ${tabIndex === 0 ? classesTabSelected : classesTabNotSelected}`}
         >
           Create new QRs
         </button>
 	<button onClick={() => setTabIndex(1)}
-		className={`px-5 py-2 text-xl ${tabIndex === 1 ? classesTabSelected : classesTabNotSelected}`}
+		className={`px-7 py-1 text-xl ${tabIndex === 1 ? classesTabSelected : classesTabNotSelected}`}
           >
           Update QRs
         </button>
@@ -139,7 +83,7 @@ function App() {
       <div className="relative top--10 border-t-0 border p-4 border-gray-600">
 
         {tabIndex === 0 ? (
-	  <CreateQrCodeBody />
+	  <CreateQrCodeBody api={api} />
         ): tabIndex === 1 ? (
           <UpdateQrCodeBody />
         ): (
