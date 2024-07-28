@@ -26,7 +26,7 @@ function App() {
 
 	  <h1 className="text-3xl mt-4" > 
 	    Batch (CSV) {'->'} QRCodeDynamic.com
-	    <small className="ml-4 text-gray-500 font-mono" >v6</small>
+	    <small className="ml-4 text-gray-500 font-mono" >v7</small>
 	  </h1>
 
 	  <p className="mt-2 font-em italic text-gray-500" >
